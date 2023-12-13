@@ -3,11 +3,11 @@
 // import {TouchableOpacity} from 'react-native-gesture-handler';
 // import Icon from 'react-native-vector-icons/FontAwesome';
 // import {TouchEventType} from 'react-native-gesture-handler/lib/typescript/TouchEventType';
-// import {StackNavigationProp} from '@react-navigation/stack';
+// import {createNativeStackNavigator} from '@react-navigation/native-stack';
 // import {useRoute} from '@react-navigation/native';
 
 // type DrawerMenuProps = {
-//   navigation: StackNavigationProp<any, any>;
+//   navigation: typeof createNativeStackNavigator;
 // };
 
 // const DrawerMenu = ({navigation}: DrawerMenuProps) => {
