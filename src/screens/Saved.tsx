@@ -1,7 +1,7 @@
 import { View, Text } from "react-native";
 import React from "react";
 
-const Saved = () => {
+const SavedScreen = () => {
   return (
     <View>
       <Text>Saved</Text>
@@ -9,4 +9,4 @@ const Saved = () => {
   );
 };
 
-export default Saved;
+export default SavedScreen;

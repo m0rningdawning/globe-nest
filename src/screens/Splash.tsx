@@ -1,7 +1,7 @@
 import { View, Text } from "react-native";
 import React from "react";
 
-const Splash = () => {
+const SplashScreen = () => {
   return (
     <View>
       <Text>Splash</Text>
@@ -9,4 +9,4 @@ const Splash = () => {
   );
 };
 
-export default Splash;
+export default SplashScreen;

@@ -87,7 +87,7 @@ interface Credentials {
 //   );
 // };
 
-const Home = () => {
+const HomeScreen = () => {
   const drawerRef = useRef<DrawerLayoutAndroid>(null);
 
   // const navigationView = <DrawerMenu navigation={navigation} />;
@@ -429,4 +429,4 @@ const menuTriggerStyles = {
   },
 };
 
-export default Home;
+export default HomeScreen;
