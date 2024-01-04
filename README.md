@@ -8,5 +8,11 @@ Globe Nest is a React-Native mobile application designed for easy and efficient 
 
 ## Tech Stack
 - Frameworks/Tools: React-Native, Expo
-- API: Node.js
-- Database: PostgreSQL
+- API: News API
+
+## Resources
+- https://newsapi.org/
+- https://reactnative.dev/
+- https://reactnavigation.org
+- https://react-bootstrap.github.io/
+- https://developer.mozilla.org/en-US/
