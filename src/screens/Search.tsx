@@ -3,8 +3,8 @@ import React from "react";
 
 const SearchScreen = () => {
   return (
-    <View>
-      <Text>Search</Text>
+    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      <Text>Search Screen</Text>
     </View>
   );
 };

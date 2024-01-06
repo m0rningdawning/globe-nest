@@ -3,8 +3,8 @@ import React from "react";
 
 const DetailsScreen = () => {
   return (
-    <View>
-      <Text>Details</Text>
+    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      <Text>Details Screen</Text>
     </View>
   );
 };

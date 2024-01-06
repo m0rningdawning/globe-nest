@@ -3,8 +3,8 @@ import React from "react";
 
 const SplashScreen = () => {
   return (
-    <View>
-      <Text>Splash</Text>
+    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      <Text>Splash Screen</Text>
     </View>
   );
 };

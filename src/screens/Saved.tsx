@@ -3,8 +3,8 @@ import React from "react";
 
 const SavedScreen = () => {
   return (
-    <View>
-      <Text>Saved</Text>
+    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      <Text>Saved Screen</Text>
     </View>
   );
 };

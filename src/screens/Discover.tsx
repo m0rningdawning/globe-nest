@@ -3,8 +3,8 @@ import React from "react";
 
 const DiscoverScreen = () => {
   return (
-    <View>
-      <Text>Discover</Text>
+    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      <Text>Discover Screen</Text>
     </View>
   );
 };

@@ -3,8 +3,8 @@ import React from "react";
 
 const WelcomeScreen = () => {
   return (
-    <View>
-      <Text>Welcome</Text>
+    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      <Text>Welcome Screen</Text>
     </View>
   );
 };

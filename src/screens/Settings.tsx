@@ -3,8 +3,8 @@ import React from "react";
 
 const SettingsScreen = () => {
   return (
-    <View>
-      <Text>Settings</Text>
+    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      <Text>Settings Screen</Text>
     </View>
   );
 };

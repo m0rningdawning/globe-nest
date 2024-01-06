@@ -1,4 +1,6 @@
 import * as React from "react";
+import { useEffect, useRef } from "react";
+import { View, Animated } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import {
@@ -33,6 +35,31 @@ const HomeStack = () => (
   </Stack.Navigator>
 );
 
+const TabIcon = ({
+  focused,
+  iconName,
+}: {
+  focused: boolean;
+  iconName: string;
+}) => {
+  const scaleValue = useRef(new Animated.Value(1)).current;
+  let size: number = 22;
+  let color: string = "#e0a16d";
+  useEffect(() => {
+    Animated.timing(scaleValue, {
+      toValue: focused ? 1.4 : 1,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+  }, [focused]);
+
+  return (
+    <Animated.View style={{ transform: [{ scale: scaleValue }] }}>
+      <Icon name={iconName} size={size} color={color} />
+    </Animated.View>
+  );
+};
+
 const App = () => {
   const { colorScheme, toggleColorScheme } = useColorScheme();
 
@@ -45,14 +72,15 @@ const App = () => {
           tabBarActiveTintColor: "#e0a16d",
           tabBarInactiveTintColor: "#e0a16d",
           tabBarStyle: {
+            height: 60,
             backgroundColor: "#22222c",
             borderTopWidth: 1,
             borderTopColor: "#e0a16d",
           },
+
           tabBarIcon: ({ focused }) => {
             let iconName: string = "";
-            let size: number = 20;
-            let color: string = focused ? "#e0a16d" : "#e0a16d";
+
             if (route.name === "Home") {
               iconName = focused ? "home" : "home-outline";
             } else if (route.name === "Discover") {
@@ -64,14 +92,14 @@ const App = () => {
             } else if (route.name === "Settings") {
               iconName = focused ? "settings" : "settings-outline";
             }
-            return <Icon name={iconName} size={size} color={color} />;
+            return <TabIcon focused={focused} iconName={iconName} />;
           },
         })}
       >
         <Tab.Screen name="Home" component={HomeStack} />
         <Tab.Screen name="Discover" component={DiscoverScreen} />
-        <Tab.Screen name="Saved" component={SavedScreen} />
         <Tab.Screen name="Search" component={SearchScreen} />
+        <Tab.Screen name="Saved" component={SavedScreen} />
         <Tab.Screen name="Settings" component={SettingsScreen} />
       </Tab.Navigator>
     </NavigationContainer>
