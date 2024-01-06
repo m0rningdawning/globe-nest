@@ -1,6 +1,10 @@
-import * as React from "react";
-import { useEffect, useRef } from "react";
-import { View, Animated } from "react-native";
+import React, { useEffect } from "react";
+import { View } from "react-native";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+} from "react-native-reanimated";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import {
@@ -42,19 +46,24 @@ const TabIcon = ({
   focused: boolean;
   iconName: string;
 }) => {
-  const scaleValue = useRef(new Animated.Value(1)).current;
-  let size: number = 22;
-  let color: string = "#e0a16d";
+  const size = 25;
+  const color = "#e0a16d";
+  const scaleValue = useSharedValue(1);
+
   useEffect(() => {
-    Animated.timing(scaleValue, {
-      toValue: focused ? 1.4 : 1,
-      duration: 200,
-      useNativeDriver: true,
-    }).start();
-  }, [focused]);
+    scaleValue.value = withTiming(focused ? 1.4 : 1, {
+      duration: 150,
+    });
+  }, [focused, scaleValue]);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: scaleValue.value }],
+    };
+  });
 
   return (
-    <Animated.View style={{ transform: [{ scale: scaleValue }] }}>
+    <Animated.View style={animatedStyle}>
       <Icon name={iconName} size={size} color={color} />
     </Animated.View>
   );
@@ -92,6 +101,7 @@ const App = () => {
             } else if (route.name === "Settings") {
               iconName = focused ? "settings" : "settings-outline";
             }
+
             return <TabIcon focused={focused} iconName={iconName} />;
           },
         })}
