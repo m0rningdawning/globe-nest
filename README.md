@@ -1,5 +1,5 @@
 # globe-nest
-Globe Nest is a React-Native mobile application designed for easy and efficient discovery of news from all over the globe. It helps the user to stay informed effortlessly with an accessible interface, quick updates, and a diverse spectrum of news categories. 
+Globe Nest is a simple React-Native mobile application written in TypeScript that fetches the latest news from NewsApi. The app utilizes Expo tools and primarily targets the Android platform.
 
 ![GitHub language count](https://img.shields.io/github/languages/count/m0rningdawning/globe-nest)
 ![GitHub top language](https://img.shields.io/github/languages/top/m0rningdawning/globe-nest) 
@@ -16,3 +16,10 @@ Globe Nest is a React-Native mobile application designed for easy and efficient 
 - https://reactnavigation.org
 - https://react-bootstrap.github.io/
 - https://developer.mozilla.org/en-US/
+
+## Assets
+### Fonts
+- https://fonts.google.com/specimen/Roboto
+- https://fonts.google.com/specimen/Rubik+Maps
+- https://fonts.google.com/specimen/Rubik+Bubbles
+- https://fonts.google.com/specimen/Quicksand
