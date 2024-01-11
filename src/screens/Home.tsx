@@ -2,7 +2,7 @@ import React, { Component, useState, useRef, useEffect } from "react";
 import NetInfo from "@react-native-community/netinfo";
 import { useQuery } from "@tanstack/react-query";
 
-import { fetchRecommendedUs, fetchTopUs } from "../../client/Api";
+import { fetchRecommendedUs, fetchTopUs, fetchTopUsAct } from "../../client/Api";
 import Header from "../components/Header";
 import SubHeader from "../components/SubHeader";
 import TopNews from "../components/TopNews";
@@ -33,30 +33,44 @@ const HomeScreen = () => {
   const [colorScheme, setColorScheme] = useState("dark");
   const [topNews, setTopNews] = useState([]);
   const [recNews, setRecNews] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const { isLoading: topNewsLoading } = useQuery({
-    queryKey: ["topNews"],
-    queryFn: fetchTopUs,
-    // @ts-expect-error ts(2769)
-    onSuccess: (data) => {
+  // const { isLoading: topNewsLoading } = useQuery({
+  //   queryKey: ["topNews"],
+  //   queryFn: fetchExample,
+  //   // @ts-expect-error ts(2769)
+  //   onSuccess: (data) => {
+  //     console.log("Top News:" + data.articles);
+  //     setTopNews(data.articles);
+  //   },
+  //   onError: (error) => {
+  //     console.log(error);
+  //   },
+  // });
+
+  useEffect(() => {
+    const fetchUsData = async () => {
+      setIsLoading(true);
+      const data = await fetchTopUsAct();
       setTopNews(data.articles);
-    },
-    onError: (error) => {
-      console.log(error);
-    },
-  });
+      console.log("Top News:" + data);
+      setIsLoading(false);
+    };
 
-  const { isLoading: recNewsLoading } = useQuery({
-    queryKey: ["recNews"],
-    queryFn: fetchRecommendedUs,
-    // @ts-expect-error ts(2769)
-    onSuccess: (data) => {
-      setRecNews(data.articles);
-    },
-    onError: (error) => {
-      console.log(error);
-    },
-  });
+    fetchUsData();
+  }, []);
+
+  // const { isLoading: recNewsLoading } = useQuery({
+  //   queryKey: ["recNews"],
+  //   queryFn: fetchExample,
+  //   // @ts-expect-error ts(2769)
+  //   onSuccess: (data) => {
+  //     setRecNews(data.articles);
+  //   },
+  //   onError: (error) => {
+  //     console.log(error);
+  //   },
+  // });
 
   if (Platform.OS === "ios") {
     // WIP
@@ -67,7 +81,7 @@ const HomeScreen = () => {
         <StatusBar style={colorScheme === "dark" ? "dark" : "light"} />
         <Header />
 
-        {topNewsLoading ? (
+        {isLoading ? (
           <View>
             <ActivityIndicator size="large" color="#e0a16d" />
           </View>

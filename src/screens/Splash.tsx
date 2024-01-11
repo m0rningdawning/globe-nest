@@ -24,7 +24,7 @@ const MySplashScreen = () => {
     }
 
     setTimeout(() => {
-      navigation.navigate("HomeScreen" as never);
+      navigation.navigate("TabNav" as never);
     }, 2000);
   }, []);
 

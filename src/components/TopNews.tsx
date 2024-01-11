@@ -15,11 +15,11 @@ const TopNews: React.FC<TopNewsProps> = ({ label, data }) => {
   const navigation = useNavigation();
 
   const handlePress = (article: any) => {
-    // @ts-expect-error ts(2345)
-    navigation.navigate("Details", { article });
+    // ts-expect-error ts(2345)
+    // navigation.navigate("Details", { article });
   };
 
-  console.log(data);
+  // console.log(data);
 
   return (
     <View>
@@ -28,7 +28,6 @@ const TopNews: React.FC<TopNewsProps> = ({ label, data }) => {
         data={data}
         renderItem={({ item }) => (
           <View>
-            <Text>This is a carousel</Text>
             <TopNewsItem item={item} handlePress={handlePress} />
           </View>
         )}

@@ -22,20 +22,51 @@ const callApi = async (url, params) => {
   };
   try {
     const { data } = await axios(options);
+    // console.log("Status" + data.status);
+    // console.log("Log after axios kicks in:" + JSON.parse(data.articles));
     return data;
   } catch (error) {
     console.log(error);
+    return {};
   }
 };
 
-export const fetchTopUs = async () => await callApi(urlTopUs);
-export const fetchRecommendedUs = async () => await callApi(urlRecommendedUs);
-export const fetchEverythingUs = async () => await callApi(urlEverythingUS);
+const callApiAct  = () => {
+  return axios
+    .get(urlTopUs)
+    .then(function (response) {
+      // console.log(response.data);
+      return response.data;
+    })
+    .catch(function (error) {
+      console.log(error);
+      return {};
+    })
+    .finally(function () {
+      console.log("api cycle completed.");
+    });
+};
+
+export const fetchTopUs = async () => {
+  return await callApi(urlTopUs);
+};
+
+export const fetchRecommendedUs = async () => {
+  return await callApi(urlRecommendedUs);
+};
+
+export const fetchEverythingUs = async () => {
+  return await callApi(urlEverythingUS);
+};
 
 export const fetchDiscover = async (discover) => {
-  await callApi(urlDiscover(discover));
+  return await callApi(urlDiscover(discover));
 };
 
 export const fetchSearch = async (search) => {
-  await callApi(urlSearch(search));
+  return await callApi(urlSearch(search));
+};
+
+export const fetchTopUsAct = async () => {
+  return await callApiAct();
 };

@@ -27,30 +27,54 @@ import WelcomeScreen from "./screens/Welcome";
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const HomeStack = () => (
-  <Stack.Navigator initialRouteName="Splash">
-    <Stack.Screen
-      options={{ headerShown: false }}
-      name="HomeScreen"
-      component={HomeScreen}
-    />
-    <Stack.Screen
-      options={{ headerShown: false }}
-      name="Splash"
-      component={SplashScreen}
-    />
-    <Stack.Screen
-      options={{ headerShown: false }}
-      name="Welcome"
-      component={WelcomeScreen}
-    />
-    <Stack.Screen
-      options={{ headerShown: false }}
-      name="Details"
-      component={DetailsScreen}
-    />
-  </Stack.Navigator>
-);
+type TabNavProps = {
+  component: any;
+};
+
+const TabNav: React.FC<TabNavProps> = () => {
+  const { colorScheme, toggleColorScheme } = useColorScheme();
+
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        headerShown: false,
+        tabBarShowLabel: false,
+        tabBarActiveTintColor: "#e0a16d",
+        tabBarInactiveTintColor: "#e0a16d",
+        tabBarStyle: {
+          height: 60,
+          backgroundColor: "#22222c",
+          borderTopWidth: 0.5,
+          borderTopColor: "#e0a16d",
+        },
+
+        tabBarIcon: ({ focused }) => {
+          let iconName: string = "";
+
+          if (route.name === "Home") {
+            iconName = focused ? "home" : "home-outline";
+          } else if (route.name === "Discover") {
+            iconName = focused ? "compass" : "compass-outline";
+          } else if (route.name === "Saved") {
+            iconName = focused ? "archive" : "archive-outline";
+          } else if (route.name === "Search") {
+            iconName = focused ? "search" : "search-outline";
+          } else if (route.name === "Settings") {
+            iconName = focused ? "settings" : "settings-outline";
+          }
+
+          return <TabIcon focused={focused} iconName={iconName} />;
+        },
+      })}
+    >
+      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Discover" component={DiscoverScreen} />
+      <Tab.Screen name="Search" component={SearchScreen} />
+      <Tab.Screen name="Saved" component={SavedScreen} />
+      <Tab.Screen name="Settings" component={SettingsScreen} />
+    </Tab.Navigator>
+  );
+};
 
 const TabIcon = ({
   focused,
@@ -83,59 +107,19 @@ const TabIcon = ({
 };
 
 const App = () => {
-  const { colorScheme, toggleColorScheme } = useColorScheme();
-  const [isSplashVisible, setIsSplashVisible] = useState(true);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setIsSplashVisible(false);
-    }, 2000);
-  }, []);
-
   return (
     <QueryClientProvider client={new QueryClient()}>
       <NavigationContainer>
-        <Tab.Navigator
-          screenOptions={({ route }) => ({
-            headerShown: false,
-            tabBarShowLabel: false,
-            tabBarActiveTintColor: "#e0a16d",
-            tabBarInactiveTintColor: "#e0a16d",
-            tabBarStyle: {
-              height: 60,
-              backgroundColor: "#22222c",
-              borderTopWidth: 0.5,
-              borderTopColor: "#e0a16d",
-            },
-
-            tabBarIcon: ({ focused }) => {
-              let iconName: string = "";
-
-              if (route.name === "Home") {
-                iconName = focused ? "home" : "home-outline";
-              } else if (route.name === "Discover") {
-                iconName = focused ? "compass" : "compass-outline";
-              } else if (route.name === "Saved") {
-                iconName = focused ? "archive" : "archive-outline";
-              } else if (route.name === "Search") {
-                iconName = focused ? "search" : "search-outline";
-              } else if (route.name === "Settings") {
-                iconName = focused ? "settings" : "settings-outline";
-              }
-
-              return <TabIcon focused={focused} iconName={iconName} />;
-            },
-          })}
+        <Stack.Navigator
+          initialRouteName="Splash"
+          screenOptions={{ headerShown: false }}
         >
-          <Tab.Screen name="Home" component={HomeStack} />
-          <Tab.Screen name="Discover" component={DiscoverScreen} />
-          <Tab.Screen name="Search" component={SearchScreen} />
-          <Tab.Screen name="Saved" component={SavedScreen} />
-          <Tab.Screen name="Settings" component={SettingsScreen} />
-        </Tab.Navigator>
-        <Modal visible={isSplashVisible} transparent={false}>
-          <SplashScreen />
-        </Modal>
+          <Stack.Screen name="HomeScreen" component={HomeScreen} />
+          <Stack.Screen name="Splash" component={SplashScreen} />
+          <Stack.Screen name="Welcome" component={WelcomeScreen} />
+          <Stack.Screen name="Details" component={DetailsScreen} />
+          <Stack.Screen name="TabNav" component={TabNav} />
+        </Stack.Navigator>
       </NavigationContainer>
     </QueryClientProvider>
   );

@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, Image, Dimensions } from "react-native";
 import React from "react";
-import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import { TouchableWithoutFeedback } from "react-native";
 
 type TopNewsItemProps = {
   item: any;
