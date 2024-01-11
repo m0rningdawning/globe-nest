@@ -1,7 +1,9 @@
-import { API_KEY, API_URL_BASE } from "@env";
+// import { API_KEY, API_URL_BASE } from "@env";
 import axios from "axios";
 
 // TODO: Add the GPS location to urls
+const API_KEY = "b33a2bc8da394513976e30f41a04044d";
+const API_URL_BASE = "https://newsapi.org/v2";
 
 const urlTopUs = `${API_URL_BASE}/top-headlines?country=us&apiKey=${API_KEY}`;
 const urlRecommendedUs = `${API_URL_BASE}/top-headlines?q=us&category=technology&apiKey=${API_KEY}`;
@@ -15,8 +17,8 @@ const urlSearch = (search) =>
 const callApi = async (url, params) => {
   const options = {
     method: "GET",
-    url,
-    params,
+    url: url,
+    params: params ? params : {},
   };
   try {
     const { data } = await axios(options);

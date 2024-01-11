@@ -12,6 +12,7 @@ import {
   createBottomTabNavigator,
 } from "@react-navigation/bottom-tabs";
 import Icon from "react-native-vector-icons/Ionicons";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import { useColorScheme } from "nativewind";
 import HomeScreen from "./screens/Home";
@@ -92,49 +93,51 @@ const App = () => {
   }, []);
 
   return (
-    <NavigationContainer>
-      <Tab.Navigator
-        screenOptions={({ route }) => ({
-          headerShown: false,
-          tabBarShowLabel: false,
-          tabBarActiveTintColor: "#e0a16d",
-          tabBarInactiveTintColor: "#e0a16d",
-          tabBarStyle: {
-            height: 60,
-            backgroundColor: "#22222c",
-            borderTopWidth: 1,
-            borderTopColor: "#e0a16d",
-          },
+    <QueryClientProvider client={new QueryClient()}>
+      <NavigationContainer>
+        <Tab.Navigator
+          screenOptions={({ route }) => ({
+            headerShown: false,
+            tabBarShowLabel: false,
+            tabBarActiveTintColor: "#e0a16d",
+            tabBarInactiveTintColor: "#e0a16d",
+            tabBarStyle: {
+              height: 60,
+              backgroundColor: "#22222c",
+              borderTopWidth: 0.5,
+              borderTopColor: "#e0a16d",
+            },
 
-          tabBarIcon: ({ focused }) => {
-            let iconName: string = "";
+            tabBarIcon: ({ focused }) => {
+              let iconName: string = "";
 
-            if (route.name === "Home") {
-              iconName = focused ? "home" : "home-outline";
-            } else if (route.name === "Discover") {
-              iconName = focused ? "compass" : "compass-outline";
-            } else if (route.name === "Saved") {
-              iconName = focused ? "archive" : "archive-outline";
-            } else if (route.name === "Search") {
-              iconName = focused ? "search" : "search-outline";
-            } else if (route.name === "Settings") {
-              iconName = focused ? "settings" : "settings-outline";
-            }
+              if (route.name === "Home") {
+                iconName = focused ? "home" : "home-outline";
+              } else if (route.name === "Discover") {
+                iconName = focused ? "compass" : "compass-outline";
+              } else if (route.name === "Saved") {
+                iconName = focused ? "archive" : "archive-outline";
+              } else if (route.name === "Search") {
+                iconName = focused ? "search" : "search-outline";
+              } else if (route.name === "Settings") {
+                iconName = focused ? "settings" : "settings-outline";
+              }
 
-            return <TabIcon focused={focused} iconName={iconName} />;
-          },
-        })}
-      >
-        <Tab.Screen name="Home" component={HomeStack} />
-        <Tab.Screen name="Discover" component={DiscoverScreen} />
-        <Tab.Screen name="Search" component={SearchScreen} />
-        <Tab.Screen name="Saved" component={SavedScreen} />
-        <Tab.Screen name="Settings" component={SettingsScreen} />
-      </Tab.Navigator>
-      <Modal visible={isSplashVisible} transparent={false}>
-        <SplashScreen />
-      </Modal>
-    </NavigationContainer>
+              return <TabIcon focused={focused} iconName={iconName} />;
+            },
+          })}
+        >
+          <Tab.Screen name="Home" component={HomeStack} />
+          <Tab.Screen name="Discover" component={DiscoverScreen} />
+          <Tab.Screen name="Search" component={SearchScreen} />
+          <Tab.Screen name="Saved" component={SavedScreen} />
+          <Tab.Screen name="Settings" component={SettingsScreen} />
+        </Tab.Navigator>
+        <Modal visible={isSplashVisible} transparent={false}>
+          <SplashScreen />
+        </Modal>
+      </NavigationContainer>
+    </QueryClientProvider>
   );
 };
 

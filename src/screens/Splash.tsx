@@ -40,7 +40,7 @@ const MySplashScreen = () => {
     <View
       style={{
         flex: 1,
-        backgroundColor: "#1e1e1e",
+        backgroundColor: "#22222b",
         justifyContent: "center",
         alignItems: "center",
       }}
