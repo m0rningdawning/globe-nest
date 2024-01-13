@@ -31,6 +31,36 @@ type TabNavProps = {
   component: any;
 };
 
+const TabIcon = ({
+  focused,
+  iconName,
+}: {
+  focused: boolean;
+  iconName: string;
+}) => {
+  const size = 25;
+  const color = focused ? "rgba(224, 161, 109, 1)" : "rgba(224, 161, 109, 0.8)";
+  const scaleValue = useSharedValue(1);
+
+  useEffect(() => {
+    scaleValue.value = withTiming(focused ? 1.4 : 1, {
+      duration: 150,
+    });
+  }, [focused, scaleValue]);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: scaleValue.value }],
+    };
+  });
+
+  return (
+    <Animated.View style={animatedStyle}>
+      <Icon name={iconName} size={size} color={color} />
+    </Animated.View>
+  );
+};
+
 const TabNav: React.FC<TabNavProps> = () => {
   const { colorScheme, toggleColorScheme } = useColorScheme();
 
@@ -43,7 +73,7 @@ const TabNav: React.FC<TabNavProps> = () => {
         tabBarInactiveTintColor: "#e0a16d",
         tabBarStyle: {
           height: 60,
-          backgroundColor: "#22222c",
+          backgroundColor: "#323241",
           borderTopWidth: 0.5,
           borderTopColor: "#e0a16d",
         },
@@ -73,36 +103,6 @@ const TabNav: React.FC<TabNavProps> = () => {
       <Tab.Screen name="Saved" component={SavedScreen} />
       <Tab.Screen name="Settings" component={SettingsScreen} />
     </Tab.Navigator>
-  );
-};
-
-const TabIcon = ({
-  focused,
-  iconName,
-}: {
-  focused: boolean;
-  iconName: string;
-}) => {
-  const size = 25;
-  const color = "#e0a16d";
-  const scaleValue = useSharedValue(1);
-
-  useEffect(() => {
-    scaleValue.value = withTiming(focused ? 1.4 : 1, {
-      duration: 150,
-    });
-  }, [focused, scaleValue]);
-
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ scale: scaleValue.value }],
-    };
-  });
-
-  return (
-    <Animated.View style={animatedStyle}>
-      <Icon name={iconName} size={size} color={color} />
-    </Animated.View>
   );
 };
 

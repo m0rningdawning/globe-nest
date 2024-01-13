@@ -26,7 +26,6 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
     marginHorizontal: 20,
     marginTop: 15,
     borderBottomWidth: 1,
@@ -39,17 +38,17 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
   },
   iconWrapper: {
-    width: 40,
-    height: 40,
-    backgroundColor: "#e0a16d",
+    width: 35,
+    height: 35,
+    backgroundColor: "#323241",
     borderRadius: 20,
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 10,
   },
   icon: {
-    fontSize: 25,
-    color: "#22222b",
+    fontSize: 23,
+    color: "#e0a16d",
   },
 });
 

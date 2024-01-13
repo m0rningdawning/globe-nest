@@ -6,8 +6,8 @@ const API_KEY = "b33a2bc8da394513976e30f41a04044d";
 const API_URL_BASE = "https://newsapi.org/v2";
 
 const urlTopUs = `${API_URL_BASE}/top-headlines?country=us&apiKey=${API_KEY}`;
-const urlRecommendedUs = `${API_URL_BASE}/top-headlines?q=us&category=technology&apiKey=${API_KEY}`;
-const urlEverythingUS = `${API_URL_BASE}/everything?q=us&apiKey=${API_KEY}`;
+const urlRecommendedUs = `${API_URL_BASE}/top-headlines?country=us&category=technology&apiKey=${API_KEY}`;
+const urlEverythingUS = `${API_URL_BASE}/everything?country=us&apiKey=${API_KEY}`;
 
 const urlDiscover = (discover) =>
   `${API_URL_BASE}/top-headlines?country=us&category=${discover}&apiKey=${API_KEY}`;
@@ -31,9 +31,9 @@ const callApi = async (url, params) => {
   }
 };
 
-const callApiAct  = () => {
+const callApiAct = (url) => {
   return axios
-    .get(urlTopUs)
+    .get(url)
     .then(function (response) {
       // console.log(response.data);
       return response.data;
@@ -46,6 +46,8 @@ const callApiAct  = () => {
       console.log("api cycle completed.");
     });
 };
+
+
 
 export const fetchTopUs = async () => {
   return await callApi(urlTopUs);
@@ -68,5 +70,9 @@ export const fetchSearch = async (search) => {
 };
 
 export const fetchTopUsAct = async () => {
-  return await callApiAct();
+  return await callApiAct(urlTopUs);
 };
+
+export const fetchRecommendedUsAct = async () => {
+  return await callApiAct(urlRecommendedUs);
+}

@@ -5,7 +5,7 @@ import Carousel from "react-native-snap-carousel";
 import TopNewsItem from "./TopNewsItem";
 
 type TopNewsProps = {
-  label: any;
+  label: string;
   data: any;
 };
 
@@ -14,9 +14,13 @@ const { width } = Dimensions.get("window");
 const TopNews: React.FC<TopNewsProps> = ({ label, data }) => {
   const navigation = useNavigation();
 
+  const validData = data.filter(
+    (item) => item.title && item.title !== "[removed]" && item.urlToImage
+  );
+
   const handlePress = (article: any) => {
-    // ts-expect-error ts(2345)
-    // navigation.navigate("Details", { article });
+    // @ts-expect-error ts(2345)
+    navigation.navigate("Details", { article });
   };
 
   // console.log(data);
@@ -25,17 +29,17 @@ const TopNews: React.FC<TopNewsProps> = ({ label, data }) => {
     <View>
       {/* @ts-ignore */}
       <Carousel
-        data={data}
+        data={validData}
         renderItem={({ item }) => (
           <View>
             <TopNewsItem item={item} handlePress={handlePress} />
           </View>
         )}
         firstItem={1}
-        sliderWidth={width * 0.9}
-        itemWidth={width * 0.9}
-        inactiveSlideScale={0.9}
-        inactiveSlideOpacity={0.7}
+        sliderWidth={width}
+        itemWidth={width * 0.8}
+        inactiveSlideScale={0.71}
+        inactiveSlideOpacity={0.65}
         slideStyle={[styles.carousel]}
       />
     </View>
