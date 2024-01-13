@@ -74,6 +74,7 @@ const TabNav: React.FC<TabNavProps> = () => {
         tabBarStyle: {
           height: 60,
           backgroundColor: "#323241",
+          justifyContent: "space-between",
           borderTopWidth: 0.5,
           borderTopColor: "#e0a16d",
         },
@@ -86,7 +87,7 @@ const TabNav: React.FC<TabNavProps> = () => {
           } else if (route.name === "Discover") {
             iconName = focused ? "compass" : "compass-outline";
           } else if (route.name === "Saved") {
-            iconName = focused ? "archive" : "archive-outline";
+            iconName = focused ? "bookmarks" : "bookmarks-outline";
           } else if (route.name === "Search") {
             iconName = focused ? "search" : "search-outline";
           } else if (route.name === "Settings") {

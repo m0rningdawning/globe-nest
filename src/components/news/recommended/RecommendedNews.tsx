@@ -6,11 +6,13 @@ import {
   Image,
   Dimensions,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { styled } from "nativewind";
 import { useNavigation } from "@react-navigation/native";
 import { FlatList, TouchableOpacity } from "react-native";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
+import Icon from "react-native-vector-icons/Ionicons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type RecommendedNewsProps = {
   label: string;
@@ -21,6 +23,8 @@ const { width } = Dimensions.get("window");
 
 const RecommendedNews: React.FC<RecommendedNewsProps> = ({ label, data }) => {
   const navigation = useNavigation();
+  const [utlList, setUrlList] = useState([]);
+  const [bookmarkStat, setBookmarkStat] = useState([]);
 
   const onPress = (item) => {
     // @ts-expect-error ts(2345)
@@ -30,6 +34,63 @@ const RecommendedNews: React.FC<RecommendedNewsProps> = ({ label, data }) => {
   const validData = data.filter(
     (item) => item.title && item.title !== "[removed]" && item.urlToImage
   );
+
+  useEffect(() => {
+    const urls = validData.map((item) => item.url);
+    setUrlList(urls);
+  }, [data]);
+
+  const toggleBookmark = async (item, id) => {
+    try {
+      const savedBookmars = await AsyncStorage.getItem("savedBookmarks");
+      let bookmarks = savedBookmars ? JSON.parse(savedBookmars) : [];
+
+      const isBookmarked = bookmarks.some(
+        (savedBookmark) => savedBookmark.url === item.url
+      );
+
+      let newBookmarkStat = { ...bookmarkStat };
+
+      if (!isBookmarked) {
+        bookmarks.push(item);
+        await AsyncStorage.setItem("savedBookmarks", JSON.stringify(bookmarks));
+        newBookmarkStat[item.url] = true;
+      } else {
+        const updatedBookmarks = bookmarks.filter(
+          (bookmark) => bookmark.url !== item.url
+        );
+        await AsyncStorage.setItem(
+          "savedBookmarks",
+          JSON.stringify(updatedBookmarks)
+        );
+        newBookmarkStat[item.url] = false;
+      }
+
+      setBookmarkStat(newBookmarkStat);
+    } catch (error) {
+      console.log("Bookmarking error: " + error);
+    }
+  };
+
+  useEffect(() => {
+    const loadBookmarks = async () => {
+      try {
+        const savedBookmarks = await AsyncStorage.getItem("savedBookmarks");
+        let bookmarks = savedBookmarks ? JSON.parse(savedBookmarks) : [];
+
+        let newBookmarkStat = {};
+        bookmarks.forEach((bookmark) => {
+          newBookmarkStat[bookmark.url] = true;
+        });
+        //@ts-expect-error ts(2345)
+        setBookmarkStat(newBookmarkStat);
+      } catch (error) {
+        console.log("Loading bookmarks error: " + error);
+      }
+    };
+
+    loadBookmarks();
+  }, []);
 
   const renderItem: React.FC<{
     item: any;
@@ -51,20 +112,30 @@ const RecommendedNews: React.FC<RecommendedNewsProps> = ({ label, data }) => {
         key={id}
         onPress={() => onPress(item)}
       >
-        <View style={styles.item}>
+        <View style={styles.imageWrapper}>
           <Image source={{ uri: item.urlToImage }} style={styles.image} />
         </View>
         <View style={styles.content}>
           <Text style={styles.title}>
-            {item?.title?.length > 65
-              ? item?.title?.slice(0, 65) + "..."
+            {item?.title?.length > 60
+              ? item?.title?.slice(0, 60) + "..."
               : item?.title}
           </Text>
           <Text style={styles.source}>
-            {item.author ? item.author + ", " : ""}{item.source.name? item.source.name : ""}
+            {item.author ? item.author + ", " : ""}
+            {item.source.name ? item.source.name : ""}
           </Text>
           <Text style={styles.date}>{formattedDate}</Text>
         </View>
+        <TouchableOpacity
+          style={styles.bookmarkContainer}
+          onPress={() => toggleBookmark(item, id)}
+        >
+          <Icon
+            name={bookmarkStat[item.url] ? "bookmark" : "bookmark-outline"}
+            style={styles.bookmark}
+          />
+        </TouchableOpacity>
       </TouchableOpacity>
     );
   };
@@ -97,35 +168,47 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   item: {
-    flex: 0.3,
+    flex: 1,
     flexDirection: "row",
     width: width * 0.9,
     borderRadius: 5,
-    marginVertical: 5,
+    marginVertical: 12,
   },
+  imageWrapper: {
+    flex: 0.28,
+  },
+
   image: {
-    width: hp(11),
+    width: hp(10),
     height: hp(10),
     borderRadius: 5,
   },
   content: {
-    flex: 0.7,
+    flex: 0.67,
   },
   title: {
     fontSize: 13,
     fontFamily: "Quicksand-Bold",
     color: "#e0a16d",
-    paddingVertical: 5,
+    marginTop: 5,
   },
   source: {
     fontSize: 12,
     fontFamily: "Quicksand-Regular",
     color: "#e0a16d",
-    paddingTop: 3,
   },
   date: {
     fontSize: 12,
     fontFamily: "Quicksand-Regular",
+    color: "#e0a16d",
+  },
+  bookmarkContainer: {
+    flex: 0.05,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  bookmark: {
+    fontSize: 20,
     color: "#e0a16d",
   },
 });

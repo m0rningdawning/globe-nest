@@ -109,7 +109,7 @@ const HomeScreen = () => {
             )}
           </View>
           <SubHeader label="Recommended News" />
-          <View>
+          <View >
             {isRecLoading ? (
               <ActivityIndicator
                 size="large"
