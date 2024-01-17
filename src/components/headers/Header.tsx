@@ -2,20 +2,29 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from "react-native-vector-icons/Ionicons";
+import { useNavigation } from "@react-navigation/native";
 
 type HeaderProps = {
   style?: object;
 };
 
 const Header: React.FC<HeaderProps> = ({ style }) => {
+  const navigation = useNavigation();
+
+  const handlePress = () => {
+    navigation.navigate("Search" as never);
+  };
   return (
     <SafeAreaView style={[styles.container, style]}>
       <View>
         <Text style={[styles.title, style]}>GLOBE NEST</Text>
       </View>
       <View>
-        <TouchableOpacity style= {[styles.iconWrapper, style]}>
-          <Icon name="search-outline" style = {[styles.icon, style]} />
+        <TouchableOpacity
+          style={[styles.iconWrapper, style]}
+          onPress={handlePress}
+        >
+          <Icon name="search-outline" style={[styles.icon, style]} />
         </TouchableOpacity>
       </View>
     </SafeAreaView>

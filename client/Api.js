@@ -1,4 +1,3 @@
-// import { API_KEY, API_URL_BASE } from "@env";
 import axios from "axios";
 
 // TODO: Add the GPS location to urls
@@ -9,8 +8,9 @@ const urlTopUs = `${API_URL_BASE}/top-headlines?country=us&apiKey=${API_KEY}`;
 const urlRecommendedUs = `${API_URL_BASE}/top-headlines?country=us&category=technology&apiKey=${API_KEY}`;
 const urlEverythingUS = `${API_URL_BASE}/everything?country=us&apiKey=${API_KEY}`;
 
-const urlDiscover = (discover) =>
-  `${API_URL_BASE}/top-headlines?country=us&category=${discover}&apiKey=${API_KEY}`;
+const urlDiscover = (category) =>
+  `${API_URL_BASE}/top-headlines?country=us&category=${category}&apiKey=${API_KEY}`;
+
 const urlSearch = (search) =>
   `${API_URL_BASE}/everything?q=${search}&apiKey=${API_KEY}`;
 
@@ -47,7 +47,22 @@ const callApiAct = (url) => {
     });
 };
 
-
+// const callApiCategory = (category) => {
+//   const url = `${API_URL_BASE}/top-headlines?country=us&category=${category}&apiKey=${API_KEY}`;
+//   return axios
+//     .get(url)
+//     .then(function (response) {
+//       // console.log(response.data);
+//       return response.data;
+//     })
+//     .catch(function (error) {
+//       console.log(error);
+//       return {};
+//     })
+//     .finally(function () {
+//       console.log("api cycle completed.");
+//     });
+// };
 
 export const fetchTopUs = async () => {
   return await callApi(urlTopUs);
@@ -61,9 +76,9 @@ export const fetchEverythingUs = async () => {
   return await callApi(urlEverythingUS);
 };
 
-export const fetchDiscover = async (discover) => {
-  return await callApi(urlDiscover(discover));
-};
+// export const fetchDiscover = async (discover) => {
+//   return await callApi(urlDiscover(discover));
+// };
 
 export const fetchSearch = async (search) => {
   return await callApi(urlSearch(search));
@@ -75,4 +90,8 @@ export const fetchTopUsAct = async () => {
 
 export const fetchRecommendedUsAct = async () => {
   return await callApiAct(urlRecommendedUs);
-}
+};
+
+export const fetchCategories = async (category) => {
+  return await callApiAct(urlDiscover(category));
+};
