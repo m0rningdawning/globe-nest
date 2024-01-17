@@ -1,4 +1,4 @@
-# globe-nest
+# globe-nest (WIP)
 Globe Nest is a simple React-Native mobile application written in TypeScript that fetches the latest news from NewsApi. The app utilizes Expo tools and primarily targets the Android platform.
 
 ![GitHub language count](https://img.shields.io/github/languages/count/m0rningdawning/globe-nest)
@@ -23,3 +23,7 @@ Globe Nest is a simple React-Native mobile application written in TypeScript tha
 - https://fonts.google.com/specimen/Rubik+Maps
 - https://fonts.google.com/specimen/Rubik+Bubbles
 - https://fonts.google.com/specimen/Quicksand
+
+## Preveiw
+<img src="https://github.com/m0rningdawning/globe-nest/assets/102054245/12575f56-bfde-4cb0-b385-aeb2e6dcfebd" width="300" height="600">
+<img src="https://github.com/m0rningdawning/globe-nest/assets/102054245/1059b66c-39f4-4bbd-9fc7-d370659896b8" width="300" height="600">
