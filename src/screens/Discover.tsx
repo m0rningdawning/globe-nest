@@ -37,6 +37,7 @@ const DiscoverScreen = () => {
   };
 
   const handleCategoryChange = (category) => {
+    if (category === activeCategory) return;
     setDiscover([]);
     setActiveCategory(category);
   };
