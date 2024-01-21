@@ -1,6 +1,8 @@
+import { Alert, PermissionsAndroid, BackHandler} from "react-native";
 import axios from "axios";
 import Geolocation from "react-native-geolocation-service";
-import { PermissionsAndroid } from "react-native";
+
+//https://newsapi.org/v2/top-headlines?country=us&apiKey=b33a2bc8da394513976e30f41a04044d
 
 const API_KEY = "b33a2bc8da394513976e30f41a04044d";
 const API_URL_BASE = "https://newsapi.org/v2";
@@ -111,6 +113,16 @@ const callApiAct = (url) => {
     })
     .catch(function (error) {
       console.log(error);
+      Alert.alert(
+        "Connection Error",
+        "An error occurred while trying to connect to the server.",
+        [
+          {
+            text: "OK",
+            onPress: () => BackHandler.exitApp(), 
+          },
+        ]
+      );
       return {};
     })
     .finally(function () {

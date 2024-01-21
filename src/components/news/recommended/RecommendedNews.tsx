@@ -13,17 +13,26 @@ import { FlatList, TouchableOpacity } from "react-native";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 import Icon from "react-native-vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "@react-navigation/native";
 
 type RecommendedNewsProps = {
   label: string;
-  data: any;
+  data?: any;
+  bookmarkedOnly?: boolean;
+  bookmarkedData?: any[];
+  setBookmarkedData?: (data: any[]) => void;
 };
 
 const { width } = Dimensions.get("window");
 
-const RecommendedNews: React.FC<RecommendedNewsProps> = ({ label, data }) => {
+const RecommendedNews: React.FC<RecommendedNewsProps> = ({
+  label,
+  data,
+  bookmarkedOnly,
+  bookmarkedData,
+  setBookmarkedData,
+}) => {
   const navigation = useNavigation();
-  const [utlList, setUrlList] = useState([]);
   const [bookmarkStat, setBookmarkStat] = useState([]);
 
   const onPress = (item) => {
@@ -31,14 +40,31 @@ const RecommendedNews: React.FC<RecommendedNewsProps> = ({ label, data }) => {
     navigation.navigate("Details", item);
   };
 
-  const validData = data.filter(
-    (item) => item.title && item.title !== "[removed]" && item.urlToImage
+  useFocusEffect(
+    React.useCallback(() => {
+      if (bookmarkedOnly) {
+        const loadBookmarks = async () => {
+          try {
+            const savedBookmarks = await AsyncStorage.getItem("savedBookmarks");
+            if (savedBookmarks !== null) {
+              const bookmarks = JSON.parse(savedBookmarks);
+              setBookmarkedData(bookmarks);
+            }
+          } catch (error) {
+            console.log("Loading bookmarks error: " + error);
+          }
+        };
+
+        loadBookmarks();
+      }
+    }, [bookmarkedOnly])
   );
 
-  useEffect(() => {
-    const urls = validData.map((item) => item.url);
-    setUrlList(urls);
-  }, [data]);
+  const validData = (bookmarkedOnly ? bookmarkedData : data).filter((item) => {
+    const isValid = item.title && item.title !== "[removed]" && item.urlToImage;
+
+    return bookmarkedOnly ? isValid && bookmarkStat[item.url] : isValid;
+  });
 
   const toggleBookmark = async (item, id) => {
     try {
@@ -72,25 +98,27 @@ const RecommendedNews: React.FC<RecommendedNewsProps> = ({ label, data }) => {
     }
   };
 
-  useEffect(() => {
-    const loadBookmarks = async () => {
-      try {
-        const savedBookmarks = await AsyncStorage.getItem("savedBookmarks");
-        let bookmarks = savedBookmarks ? JSON.parse(savedBookmarks) : [];
+  useFocusEffect(
+    React.useCallback(() => {
+      const loadBookmarks = async () => {
+        try {
+          const savedBookmarks = await AsyncStorage.getItem("savedBookmarks");
+          let bookmarks = savedBookmarks ? JSON.parse(savedBookmarks) : [];
 
-        let newBookmarkStat = {};
-        bookmarks.forEach((bookmark) => {
-          newBookmarkStat[bookmark.url] = true;
-        });
-        //@ts-expect-error ts(2345)
-        setBookmarkStat(newBookmarkStat);
-      } catch (error) {
-        console.log("Loading bookmarks error: " + error);
-      }
-    };
+          let newBookmarkStat = {};
+          bookmarks.forEach((bookmark) => {
+            newBookmarkStat[bookmark.url] = true;
+          });
+          //@ts-expect-error ts(2345)
+          setBookmarkStat(newBookmarkStat);
+        } catch (error) {
+          console.log("Loading bookmarks error: " + error);
+        }
+      };
 
-    loadBookmarks();
-  }, []);
+      loadBookmarks();
+    }, [])
+  );
 
   const renderItem: React.FC<{
     item: any;

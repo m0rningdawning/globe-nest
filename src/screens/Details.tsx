@@ -5,22 +5,93 @@ import {
   Touchable,
   TouchableOpacity,
   ActivityIndicator,
+  Share,
 } from "react-native";
-import React from "react";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import React, { useState } from "react";
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import WebView from "react-native-webview";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const DetailsScreen = () => {
+  const [visible, setVisible] = useState(false);
+  const [bookmarkStat, setBookmarkStat] = useState([]);
+
   const navigation = useNavigation();
 
-  const [isBookmarked, setIsBookmarked] = React.useState(false);
-  const [visible, setVisible] = React.useState(false);
+  const route = useRoute();
+  const item = route.params;
 
-  const {params: item} = useRoute();
+  const onShare = async () => {
+    try {
+      await Share.share({
+        //@ts-expect-error ts(2339)
+        message: item.url,
+      });
+    } catch (error) {
+      console.log("Sharing error: " + error);
+    }
+  };
 
-  const toggleBookmark = async () => {};
+  const toggleBookmark = async (item, id) => {
+    try {
+      const savedBookmars = await AsyncStorage.getItem("savedBookmarks");
+      let bookmarks = savedBookmars ? JSON.parse(savedBookmars) : [];
+
+      const isBookmarked = bookmarks.some(
+        (savedBookmark) => savedBookmark.url === item.url
+      );
+
+      let newBookmarkStat = { ...bookmarkStat };
+
+      if (!isBookmarked) {
+        bookmarks.push(item);
+        await AsyncStorage.setItem("savedBookmarks", JSON.stringify(bookmarks));
+        newBookmarkStat[item.url] = true;
+      } else {
+        const updatedBookmarks = bookmarks.filter(
+          (bookmark) => bookmark.url !== item.url
+        );
+        await AsyncStorage.setItem(
+          "savedBookmarks",
+          JSON.stringify(updatedBookmarks)
+        );
+        newBookmarkStat[item.url] = false;
+      }
+
+      setBookmarkStat(newBookmarkStat);
+    } catch (error) {
+      console.log("Bookmarking error: " + error);
+    }
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const loadBookmarks = async () => {
+        try {
+          const savedBookmarks = await AsyncStorage.getItem("savedBookmarks");
+          let bookmarks = savedBookmarks ? JSON.parse(savedBookmarks) : [];
+
+          let newBookmarkStat = {};
+          bookmarks.forEach((bookmark) => {
+            newBookmarkStat[bookmark.url] = true;
+          });
+          //@ts-expect-error ts(2345)
+          setBookmarkStat(newBookmarkStat);
+        } catch (error) {
+          console.log("Loading bookmarks error: " + error);
+        }
+      };
+
+      loadBookmarks();
+    }, [])
+  );
+
   return (
     <>
       <View style={styles.container}>
@@ -32,20 +103,18 @@ const DetailsScreen = () => {
             <Icon name="arrow-back-outline" style={styles.icon} />
           </TouchableOpacity>
           <View style={{ flexDirection: "row" }}>
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              style={styles.iconWrapper}
-            >
+            <TouchableOpacity onPress={onShare} style={styles.iconWrapper}>
               <Icon name="share-outline" style={styles.icon} />
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => navigation.goBack()}
+              //@ts-expect-error ts(2554)
+              onPress={() => toggleBookmark(item)}
               style={styles.iconWrapper}
             >
               <Icon
-                name="bookmark-outline"
+                //@ts-expect-error ts(2339)
+                name={bookmarkStat[item.url] ? "bookmark" : "bookmark-outline"}
                 style={styles.icon}
-                onPress={toggleBookmark}
               />
             </TouchableOpacity>
           </View>
@@ -59,9 +128,7 @@ const DetailsScreen = () => {
           onLoadEnd={() => setVisible(false)}
           style={{ marginTop: 20 }}
         />
-        {
-          visible && <ActivityIndicator size="large" color="#e0a16d" />
-        }
+        {visible && <ActivityIndicator size="large" color="#e0a16d" />}
       </View>
     </>
   );

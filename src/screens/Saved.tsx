@@ -15,137 +15,52 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 import RecommendedNews from "../components/news/recommended/RecommendedNews";
 
-const { width } = Dimensions.get("window");
-
 const SavedScreen = () => {
-  const [saved, setSaved] = React.useState([]);
-  const [utlList, setUrlList] = useState([]);
-  const [bookmarkStat, setBookmarkStat] = useState([]);
+  const [bookmarkedData, setBookmarkedData] = useState([]);
+  const clearBookmarks = async () => {
+    try {
+      await AsyncStorage.removeItem("savedBookmarks");
+      setBookmarkedData([]);
+    } catch (error) {
+      console.log("Clearing bookmarks error: " + error);
+    }
+  };
 
-  // const onPress = (item) => {
-  //   // @ts-expect-error ts(2345)
-  //   navigation.navigate("Details", item);
-  // };
+  const loadBookmarks = async () => {
+    try {
+      const savedBookmarks = await AsyncStorage.getItem("savedBookmarks");
+      if (savedBookmarks !== null) {
+        const bookmarks = JSON.parse(savedBookmarks);
+        setBookmarkedData(bookmarks);
+      }
+    } catch (error) {
+      console.log("Loading bookmarks error: " + error);
+    }
+  };
 
-  // const toggleBookmark = async (item, id) => {
-  //   try {
-  //     const savedBookmars = await AsyncStorage.getItem("savedBookmarks");
-  //     let bookmarks = savedBookmars ? JSON.parse(savedBookmars) : [];
-
-  //     const isBookmarked = bookmarks.some(
-  //       (savedBookmark) => savedBookmark.url === item.url
-  //     );
-
-  //     let newBookmarkStat = { ...bookmarkStat };
-
-  //     if (!isBookmarked) {
-  //       bookmarks.push(item);
-  //       await AsyncStorage.setItem("savedBookmarks", JSON.stringify(bookmarks));
-  //       newBookmarkStat[item.url] = true;
-  //     } else {
-  //       const updatedBookmarks = bookmarks.filter(
-  //         (bookmark) => bookmark.url !== item.url
-  //       );
-  //       await AsyncStorage.setItem(
-  //         "savedBookmarks",
-  //         JSON.stringify(updatedBookmarks)
-  //       );
-  //       newBookmarkStat[item.url] = false;
-  //     }
-
-  //     setBookmarkStat(newBookmarkStat);
-  //   } catch (error) {
-  //     console.log("Bookmarking error: " + error);
-  //   }
-  // };
-
-  // const renderItem: React.FC<{
-  //   item: any;
-  //   id: any;
-  // }> = ({ item, id }) => {
-  //   const date = new Date(item.publishedAt);
-
-  //   const formattedDate = date.toLocaleDateString("en-US", {
-  //     weekday: "short",
-  //     hour: "numeric",
-  //     day: "numeric",
-  //     month: "short",
-  //     year: "numeric",
-  //   });
-
-  //   return (
-  //     <TouchableOpacity
-  //       style={itemStyles.item}
-  //       key={id}
-  //       onPress={() => onPress(item)}
-  //     >
-  //       <View style={itemStyles.imageWrapper}>
-  //         <Image source={{ uri: item.urlToImage }} style={itemStyles.image} />
-  //       </View>
-  //       <View style={itemStyles.content}>
-  //         <Text style={itemStyles.title}>
-  //           {item?.title?.length > 60
-  //             ? item?.title?.slice(0, 60) + "..."
-  //             : item?.title}
-  //         </Text>
-  //         <Text style={itemStyles.source}>
-  //           {item.author ? item.author + ", " : ""}
-  //           {item.source.name ? item.source.name : ""}
-  //         </Text>
-  //         <Text style={itemStyles.date}>{formattedDate}</Text>
-  //       </View>
-  //       <TouchableOpacity
-  //         style={itemStyles.bookmarkContainer}
-  //         onPress={() => toggleBookmark(item, id)}
-  //       >
-  //         <Icon
-  //           name={bookmarkStat[item.url] ? "bookmark" : "bookmark-outline"}
-  //           style={itemStyles.bookmark}
-  //         />
-  //       </TouchableOpacity>
-  //     </TouchableOpacity>
-  //   );
-  // };
-
-  // useEffect(() => {
-  //   const urls = saved.map((item) => item.url);
-  //   setUrlList(urls);
-  // }, [saved]);
-
-  // useEffect(() => {
-  //   const loadBookmarks = async () => {
-  //     try {
-  //       const savedBookmarks = await AsyncStorage.getItem("savedBookmarks");
-  //       let bookmarks = savedBookmarks ? JSON.parse(savedBookmarks) : [];
-
-  //       let newBookmarkStat = {};
-  //       bookmarks.forEach((bookmark) => {
-  //         newBookmarkStat[bookmark.url] = true;
-  //       });
-  //       //@ts-expect-error ts(2345)
-  //       setBookmarkStat(newBookmarkStat);
-  //     } catch (error) {
-  //       console.log("Loading bookmarks error: " + error);
-  //     }
-  //   };
-
-  //   loadBookmarks();
-  // }, []);
+  useEffect(() => {
+    loadBookmarks();
+  }, []);
 
   return (
     <SafeAreaView style={[styles.container]}>
+      <View style={styles.header}>
+        <Text style={styles.title}>Saved</Text>
+        <TouchableOpacity style={styles.button} onPress={clearBookmarks}>
+          <Text style={styles.buttonText}>Clear</Text>
+        </TouchableOpacity>
+      </View>
       <ScrollView
         showsVerticalScrollIndicator={false}
         stickyHeaderIndices={[0]}
         scrollEventThrottle={16}
       >
-        <View style={styles.header}>
-          <Text style={styles.title}>Saved</Text>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Clear</Text>
-          </TouchableOpacity>
-        </View>
-        {/* <RecommendedNews label={"Saved"} data={saved} /> */}
+        <RecommendedNews
+          label={"Saved"}
+          bookmarkedOnly={true}
+          bookmarkedData={bookmarkedData}
+          setBookmarkedData={setBookmarkedData}
+        />
       </ScrollView>
     </SafeAreaView>
   );
@@ -159,6 +74,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
     paddingHorizontal: 20,
     paddingVertical: 10,
   },
@@ -170,12 +86,13 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: "#e0a16d",
-    paddingHorizontal: 20,
-    paddingVertical: 10,
+    paddingHorizontal: 15,
+    paddingVertical: 5,
     borderRadius: 10,
   },
   buttonText: {
     fontSize: 15,
+    lineHeight: 20,
     fontFamily: "Quicksand-Medium",
     color: "#22222b",
   },
