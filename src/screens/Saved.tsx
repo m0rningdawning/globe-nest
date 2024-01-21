@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   title: {
-    fontSize: 30,
+    fontSize: 28,
     fontFamily: "Quicksand-Bold",
     textTransform: "uppercase",
     color: "#e0a16d",

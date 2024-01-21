@@ -1,6 +1,7 @@
 import axios from "axios";
+import Geolocation from "react-native-geolocation-service";
+import { PermissionsAndroid } from "react-native";
 
-// TODO: Add the GPS location to urls
 const API_KEY = "b33a2bc8da394513976e30f41a04044d";
 const API_URL_BASE = "https://newsapi.org/v2";
 
@@ -8,11 +9,81 @@ const urlTopUs = `${API_URL_BASE}/top-headlines?country=us&apiKey=${API_KEY}`;
 const urlRecommendedUs = `${API_URL_BASE}/top-headlines?country=us&category=technology&apiKey=${API_KEY}`;
 const urlEverythingUS = `${API_URL_BASE}/everything?country=us&apiKey=${API_KEY}`;
 
+const gps = false;
+
+const urlTop = () => {
+  const countryCode = fetchCountryCode();
+  return `${API_URL_BASE}/top-headlines?country=${countryCode}&apiKey=${API_KEY}`;
+};
+
+const urlRecommended = () => {
+  const countryCode = fetchCountryCode();
+  return `${API_URL_BASE}/top-headlines?country=${countryCode}&category=technology&apiKey=${API_KEY}`;
+};
+
+const urlEverything = () => {
+  const countryCode = fetchCountryCode();
+  return `${API_URL_BASE}/everything?country=${countryCode}&apiKey=${API_KEY}`;
+};
+
+const urlGps = (lat, lng) =>
+  `http://api.geonames.org/countryCodeJSON?lat=${lat}&lng=${lng}&username=4shensnow`;
+
 const urlDiscover = (category) =>
   `${API_URL_BASE}/top-headlines?country=us&category=${category}&apiKey=${API_KEY}`;
 
 const urlSearch = (search) =>
   `${API_URL_BASE}/everything?q=${search}&apiKey=${API_KEY}`;
+
+const requestLocationPermission = async () => {
+  try {
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      {
+        title: "Geolocation Permission",
+        message: "Can we access your location?",
+        buttonNeutral: "Ask Me Later",
+        buttonNegative: "Cancel",
+        buttonPositive: "OK",
+      }
+    );
+    console.log("granted", granted);
+    if (granted === "granted") {
+      console.log("You can use Geolocation");
+      return true;
+    } else {
+      console.log("You cannot use Geolocation");
+      return false;
+    }
+  } catch (err) {
+    return false;
+  }
+};
+
+const fetchCountryCode = async () => {
+  // const result = requestLocationPermission();
+  // result.then((res) => async () => {
+  //   console.log("res is:", res);
+  try {
+    const location = Geolocation.getCurrentPosition({
+      enableHighAccuracy: true,
+      timeout: 15000,
+      maximumAge: 10000,
+    });
+
+    const lat = location.coords.latitude;
+    const lng = location.coords.longitude;
+
+    const response = await axios.get(urlGps(lat, lng));
+    console.log("response", response);
+
+    const countryCode = response.data.countryCode;
+    return countryCode.toLowerCase();
+  } catch (error) {
+    console.error("Error fetching country code:", error);
+    return null;
+  }
+};
 
 const callApi = async (url, params) => {
   const options = {
@@ -47,23 +118,6 @@ const callApiAct = (url) => {
     });
 };
 
-// const callApiCategory = (category) => {
-//   const url = `${API_URL_BASE}/top-headlines?country=us&category=${category}&apiKey=${API_KEY}`;
-//   return axios
-//     .get(url)
-//     .then(function (response) {
-//       // console.log(response.data);
-//       return response.data;
-//     })
-//     .catch(function (error) {
-//       console.log(error);
-//       return {};
-//     })
-//     .finally(function () {
-//       console.log("api cycle completed.");
-//     });
-// };
-
 export const fetchTopUs = async () => {
   return await callApi(urlTopUs);
 };
@@ -76,20 +130,20 @@ export const fetchEverythingUs = async () => {
   return await callApi(urlEverythingUS);
 };
 
-// export const fetchDiscover = async (discover) => {
-//   return await callApi(urlDiscover(discover));
-// };
-
 export const fetchSearch = async (search) => {
   return await callApi(urlSearch(search));
 };
 
+export const fetchSearchAct = async (search) => {
+  return await callApiAct(urlSearch(search));
+};
+
 export const fetchTopUsAct = async () => {
-  return await callApiAct(urlTopUs);
+  return await callApiAct(gps ? urlTop() : urlTopUs);
 };
 
 export const fetchRecommendedUsAct = async () => {
-  return await callApiAct(urlRecommendedUs);
+  return await callApiAct(gps ? urlRecommended() : urlRecommendedUs);
 };
 
 export const fetchCategories = async (category) => {

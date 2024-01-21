@@ -108,6 +108,7 @@ const TabNav: React.FC<TabNavProps> = () => {
 };
 
 const App = () => {
+  const [shakeEnabled, setShakeEnabled] = useState(true);
   return (
     <QueryClientProvider client={new QueryClient()}>
       <NavigationContainer>
@@ -115,11 +116,22 @@ const App = () => {
           initialRouteName="Splash"
           screenOptions={{ headerShown: false }}
         >
-          <Stack.Screen name="HomeScreen" component={HomeScreen} />
+          <Stack.Screen name="HomeScreen">
+            {(props) => <HomeScreen {...props} shakeEnabled={shakeEnabled} />}
+          </Stack.Screen>
           <Stack.Screen name="Splash" component={SplashScreen} />
           <Stack.Screen name="Welcome" component={WelcomeScreen} />
           <Stack.Screen name="Details" component={DetailsScreen} />
           <Stack.Screen name="TabNav" component={TabNav} />
+          <Stack.Screen name="Settings">
+            {(props) => (
+              <SettingsScreen
+                {...props}
+                shakeEnabled={shakeEnabled}
+                setShakeEnabled={setShakeEnabled}
+              />
+            )}
+          </Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>
     </QueryClientProvider>

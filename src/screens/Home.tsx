@@ -1,9 +1,11 @@
 import React, { Component, useState, useRef, useEffect } from "react";
 import NetInfo from "@react-native-community/netinfo";
 import { useQuery } from "@tanstack/react-query";
+import { Accelerometer } from "expo-sensors";
 
 import {
   fetchRecommendedUs,
+  fetchRecommendedUsAct,
   fetchTopUs,
   fetchTopUsAct,
 } from "../../client/Api";
@@ -30,7 +32,7 @@ import {
 import { StatusBar } from "expo-status-bar";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 
-const HomeScreen = () => {
+const HomeScreen = ({ shakeEnabled }) => {
   const [colorScheme, setColorScheme] = useState("dark");
   const [topNews, setTopNews] = useState([]);
   const [recNews, setRecNews] = useState([]);
@@ -50,26 +52,55 @@ const HomeScreen = () => {
   //   },
   // });
 
+  const fetchTopUsData = async () => {
+    setIsTopLoading(true);
+    const data = await fetchTopUsAct();
+    setTopNews(data.articles);
+    console.log("Top News:" + data.totalResults);
+    setIsTopLoading(false);
+  };
+
+  const fetchRecUsData = async () => {
+    setIsRecLoading(true);
+    const data = await fetchRecommendedUsAct();
+    setRecNews(data.articles);
+    console.log("Rec News:" + data.totalResults);
+    setIsRecLoading(false);
+  };
+
   useEffect(() => {
-    const fetchTopUsData = async () => {
-      setIsTopLoading(true);
-      const data = await fetchTopUsAct();
-      setTopNews(data.articles);
-      console.log("Top News:" + data.totalResults);
-      setIsTopLoading(false);
-    };
-
-    const fetchRecUsData = async () => {
-      setIsRecLoading(true);
-      const data = await fetchRecommendedUs();
-      setRecNews(data.articles);
-      console.log("Rec News:" + data.totalResults);
-      setIsRecLoading(false);
-    };
-
     fetchTopUsData();
     fetchRecUsData();
   }, []);
+
+  useEffect(() => {
+    let subscription;
+
+    const handleShake = () => {
+      if (!shakeEnabled) {
+        fetchTopUsData();
+        fetchRecUsData();
+        console.log("Shake event detected! Updating the page...");
+      }
+    };
+
+    Accelerometer.setUpdateInterval(100);
+
+    subscription = Accelerometer.addListener(({ x, y, z }) => {
+      const acceleration = Math.abs(x) + Math.abs(y) + Math.abs(z);
+      const shakeThreshold = 6;
+
+      if (acceleration > shakeThreshold) {
+        handleShake();
+      }
+    });
+
+    return () => {
+      if (subscription) {
+        subscription.remove();
+      }
+    };
+  }, [shakeEnabled]);
 
   // const { isLoading: recNewsLoading } = useQuery({
   //   queryKey: ["recNews"],
@@ -109,7 +140,7 @@ const HomeScreen = () => {
             )}
           </View>
           <SubHeader label="Recommended News" />
-          <View >
+          <View>
             {isRecLoading ? (
               <ActivityIndicator
                 size="large"

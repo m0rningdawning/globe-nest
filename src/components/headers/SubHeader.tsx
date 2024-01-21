@@ -1,18 +1,23 @@
 import { Text, View, StyleSheet } from "react-native";
 import React from "react";
+import { useNavigation } from "@react-navigation/native";
+import { TouchableOpacity } from "react-native";
 
 type SubHeaderProps = {
   label: string;
 };
 
 const SubHeader: React.FC<SubHeaderProps> = ({ label }) => {
+  const naviagation = useNavigation();
   return (
     <View style={[styles.wrapper]}>
       <View style={[styles.container]}>
         <Text style={[styles.label]}>{label}</Text>
-        <View style={[styles.more]}>
+        <TouchableOpacity style={[styles.more]} onPress={() => {
+          naviagation.navigate("Discover" as never);
+        }}>
           <Text style={[styles.moreText]}>More</Text>
-        </View>
+        </TouchableOpacity>
       </View>
     </View>
   );

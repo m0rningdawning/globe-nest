@@ -20,7 +20,7 @@ const TopNews: React.FC<TopNewsProps> = ({ label, data }) => {
 
   const handlePress = (article: any) => {
     // @ts-expect-error ts(2345)
-    navigation.navigate("Details", { article });
+    navigation.navigate("Details", article);
   };
 
   // console.log(data);
