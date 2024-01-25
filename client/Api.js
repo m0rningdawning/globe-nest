@@ -1,4 +1,4 @@
-import { Alert, PermissionsAndroid, BackHandler} from "react-native";
+import { Alert, PermissionsAndroid, BackHandler } from "react-native";
 import axios from "axios";
 import Geolocation from "react-native-geolocation-service";
 
@@ -112,17 +112,19 @@ const callApiAct = (url) => {
       return response.data;
     })
     .catch(function (error) {
-      console.log(error);
-      Alert.alert(
-        "Connection Error",
-        "An error occurred while trying to connect to the server.",
-        [
-          {
-            text: "OK",
-            onPress: () => BackHandler.exitApp(), 
-          },
-        ]
-      );
+      if (error.response.status !== 400) {
+        console.log(error);
+        Alert.alert(
+          "Connection Error",
+          "An error occurred while trying to connect to the server.",
+          [
+            {
+              text: "OK",
+              onPress: () => BackHandler.exitApp(),
+            },
+          ]
+        );
+      }
       return {};
     })
     .finally(function () {
