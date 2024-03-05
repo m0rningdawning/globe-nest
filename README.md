@@ -27,3 +27,6 @@ Globe Nest is a simple React-Native mobile application written in TypeScript tha
 ## Preveiw
 <img src="https://github.com/m0rningdawning/globe-nest/assets/102054245/12575f56-bfde-4cb0-b385-aeb2e6dcfebd" width="300" height="600">
 <img src="https://github.com/m0rningdawning/globe-nest/assets/102054245/1059b66c-39f4-4bbd-9fc7-d370659896b8" width="300" height="600">
+
+## Inspiration
+- https://www.youtube.com/watch?v=hnoullGuo74&list=PL6d4w9eHiHwdZfxSnXShbwiKtGneUkv7y&index=11&t=9401s
